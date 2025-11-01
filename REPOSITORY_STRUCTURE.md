@@ -12,7 +12,7 @@ furbulous-ha/
 ├── custom_components/
 │   └── furbulous/
 │       ├── __init__.py          # Entry point + coordinateurs
-│       ├── manifest.json        # Métadonnées intégration (v1.2.0)
+│       ├── manifest.json        # Métadonnées intégration (v1.0.0)
 │       ├── strings.json         # Traductions FR
 │       ├── config_flow.py       # Configuration UI
 │       ├── const.py             # Constantes
@@ -86,7 +86,7 @@ furbulous-ha/
 ```bash
 git init
 git add .
-git commit -m "Initial commit v1.2.0 - HomeKit Support"
+git commit -m "Initial commit v1.0.0 - HomeKit Support"
 ```
 
 ### Créer la branche main et push
@@ -98,8 +98,8 @@ git push -u origin main
 
 ### Créer un tag de version
 ```bash
-git tag -a v1.2.0 -m "Release v1.2.0 - HomeKit Support"
-git push origin v1.2.0
+git tag -a v1.0.0 -m "Release v1.0.0 - HomeKit Support"
+git push origin v1.0.0
 ```
 
 ## ✅ Vérification finale
@@ -108,7 +108,7 @@ Avant de publier, vérifier que :
 - [ ] `.gitignore` exclut bien config/, resources/, sources/
 - [ ] Tous les fichiers __pycache__ sont exclus
 - [ ] README.md est à jour avec badges
-- [ ] manifest.json indique version 1.2.0
+- [ ] manifest.json indique version 1.0.0
 - [ ] hacs.json est complet
 - [ ] Documentation est complète
 

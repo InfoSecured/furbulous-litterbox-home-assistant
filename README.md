@@ -10,7 +10,7 @@ Intégration complète pour les litières connectées **Furbulous Cat** dans Hom
 
 ## 🎯 Fonctionnalités
 
-### ✅ Version 1.2.0
+### ✅ Version 1.0.0
 - ✅ **Authentication** - Connexion avec email/password ou token direct
 - ✅ **Device Discovery** - Détection automatique des litières
 - ✅ **22 Sensors** - Poids, utilisations, état, modes, versions, pet info, etc.
@@ -196,34 +196,8 @@ Le capteur de présence du chat utilise un **coordinateur rapide** pour une dét
 
 ## 📚 Documentation
 
-- **[HOMEKIT_COMPATIBILITY.md](docs/HOMEKIT_COMPATIBILITY.md)** - Configuration HomeKit
 - **[INSTALLATION.md](docs/INSTALLATION.md)** - Guide installation détaillé
-- **[TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)** - Résolution problèmes
 - **[API_ENDPOINTS.md](docs/API_ENDPOINTS.md)** - 86 endpoints API documentés
-- **[CHANGELOG.md](docs/CHANGELOG.md)** - Historique versions
-
----
-
-## 📝 Changelog
-
-### v1.2.0 (1 novembre 2025)
-- ✨ **4 switches HomeKit** - Contrôle complet via Siri
-- ✨ **Binary sensor chat** - Détection présence (30 secondes)
-- ✨ **Coordinateur rapide** - Mise à jour différenciée
-- ✨ **HomeKit compatible** - Support complet Bridge
-- � Documentation HomeKit complète
-
-### v1.1.0 (1 novembre 2025)
-- ✨ Boutons supplémentaires (Vider, Emballage auto)
-- ✨ Binary sensor bac plein
-- ✨ Auto refresh token
-- 🐛 Corrections timezone et properties
-
-### v1.0.0 (31 octobre 2025)
-- 🎉 Version initiale
-- ✨ 19 sensors, 8 binary sensors, 2 buttons
-- ✨ Support multi-chats
-- ✨ Détection erreurs
 
 ---
 
@@ -253,7 +227,7 @@ Ce projet est sous licence MIT - voir [LICENSE](LICENSE)
 
 ---
 
-**Version**: 1.2.0  
+**Version**: 1.0.0  
 **Status**: ✅ Production Ready  
 **Auteur**: [@fabienbounoir](https://github.com/fabienbounoir)  
 **HomeKit**: ✅ Compatible  
