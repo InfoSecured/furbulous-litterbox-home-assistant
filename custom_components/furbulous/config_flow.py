@@ -15,7 +15,7 @@ from .furbulous_api import FurbulousCatAPI, FurbulousCatAuthError
 
 _LOGGER = logging.getLogger(__name__)
 
-from .const import CONF_ACCOUNT_TYPE, CONF_TOKEN, CONF_REGION, DEFAULT_ACCOUNT_TYPE, DEFAULT_REGION, DOMAIN
+from .const import CONF_ACCOUNT_TYPE, CONF_TOKEN, CONF_REGION, DEFAULT_ACCOUNT_TYPE, DOMAIN
 
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
@@ -23,7 +23,6 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
         vol.Optional(CONF_EMAIL): str,
         vol.Optional(CONF_PASSWORD): str,
         vol.Optional(CONF_ACCOUNT_TYPE, default=DEFAULT_ACCOUNT_TYPE): int,
-        vol.Optional(CONF_REGION, default=DEFAULT_REGION): vol.In(["US", "EU", "CN"]),
     }
 )
 
@@ -40,26 +39,23 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
 
         if user_input is not None:
-            _LOGGER.debug("Config flow started with input: %s", {k: "***" if k in ["password", "token"] else v for k, v in user_input.items()})
+            _LOGGER.debug("Config flow started with input")
             
             try:
                 # Check if user provided a token directly
                 if CONF_TOKEN in user_input and user_input[CONF_TOKEN]:
                     _LOGGER.debug("Using token authentication")
-                    # Use token directly without authentication
                     api = FurbulousCatAPI(
-                        email=user_input[CONF_EMAIL],
-                        password=user_input[CONF_PASSWORD],
-                        account_type=user_input.get(CONF_ACCOUNT_TYPE, DEFAULT_ACCOUNT_TYPE),
-                        region=user_input.get(CONF_REGION, DEFAULT_REGION)
+                        email="",
+                        password="",
+                        account_type=DEFAULT_ACCOUNT_TYPE,
+                        token=user_input[CONF_TOKEN]
                     )
                     
                     _LOGGER.debug("Testing token by fetching device list")
-                    # Test the token by getting device list
                     devices = await self.hass.async_add_executor_job(api.get_devices)
                     _LOGGER.info("Token validated successfully, found %d devices", len(devices))
                     
-                    # Create the entry with token
                     await self.async_set_unique_id(f"furbulous_token_{user_input[CONF_TOKEN][:10]}")
                     self._abort_if_unique_id_configured()
                     
@@ -72,9 +68,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 _LOGGER.debug("Using email/password authentication")
                 
                 if not user_input.get(CONF_EMAIL) or not user_input.get(CONF_PASSWORD):
-                    _LOGGER.warning("Missing credentials: email=%s, password=%s", 
-                                  bool(user_input.get(CONF_EMAIL)), 
-                                  bool(user_input.get(CONF_PASSWORD)))
+                    _LOGGER.warning("Missing credentials")
                     errors["base"] = "missing_credentials"
                     return self.async_show_form(
                         step_id="user",
@@ -86,13 +80,13 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     email=user_input[CONF_EMAIL],
                     password=user_input[CONF_PASSWORD],
                     account_type=user_input.get(CONF_ACCOUNT_TYPE, DEFAULT_ACCOUNT_TYPE)
+                    # REMOVED: region=user_input.get(CONF_REGION, DEFAULT_REGION)
                 )
                 
                 _LOGGER.debug("Attempting authentication for email: %s", user_input[CONF_EMAIL])
                 await self.hass.async_add_executor_job(api.authenticate)
                 _LOGGER.info("Authentication successful for %s", user_input[CONF_EMAIL])
 
-                # Create the entry
                 await self.async_set_unique_id(user_input[CONF_EMAIL])
                 self._abort_if_unique_id_configured()
 
@@ -103,9 +97,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             except FurbulousCatAuthError as err:
                 _LOGGER.error("Authentication failed: %s", err)
-                _LOGGER.debug("Full authentication error details:", exc_info=True)
                 errors["base"] = "invalid_auth"
-            except Exception as err:  # pylint: disable=broad-except
+            except Exception as err:
                 _LOGGER.exception("Unexpected exception during config flow: %s", err)
                 errors["base"] = "unknown"
 
