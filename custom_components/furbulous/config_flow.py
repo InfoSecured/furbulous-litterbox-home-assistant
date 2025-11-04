@@ -37,9 +37,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
 
         if user_input is not None:
+            _LOGGER.debug("Config flow started with input: %s", {k: "***" if k in ["password", "token"] else v for k, v in user_input.items()})
+            
             try:
                 # Check if user provided a token directly
                 if CONF_TOKEN in user_input and user_input[CONF_TOKEN]:
+                    _LOGGER.debug("Using token authentication")
                     # Use token directly without authentication
                     api = FurbulousCatAPI(
                         email="",
@@ -47,8 +50,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         account_type=DEFAULT_ACCOUNT_TYPE,
                         token=user_input[CONF_TOKEN]
                     )
+                    
+                    _LOGGER.debug("Testing token by fetching device list")
                     # Test the token by getting device list
-                    await self.hass.async_add_executor_job(api.get_devices)
+                    devices = await self.hass.async_add_executor_job(api.get_devices)
+                    _LOGGER.info("Token validated successfully, found %d devices", len(devices))
                     
                     # Create the entry with token
                     await self.async_set_unique_id(f"furbulous_token_{user_input[CONF_TOKEN][:10]}")
@@ -60,15 +66,28 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     )
                 
                 # Otherwise use email/password authentication
+                _LOGGER.debug("Using email/password authentication")
+                
                 if not user_input.get(CONF_EMAIL) or not user_input.get(CONF_PASSWORD):
+                    _LOGGER.warning("Missing credentials: email=%s, password=%s", 
+                                  bool(user_input.get(CONF_EMAIL)), 
+                                  bool(user_input.get(CONF_PASSWORD)))
                     errors["base"] = "missing_credentials"
-                else:
-                    api = FurbulousCatAPI(
-                        email=user_input[CONF_EMAIL],
-                        password=user_input[CONF_PASSWORD],
-                        account_type=user_input.get(CONF_ACCOUNT_TYPE, DEFAULT_ACCOUNT_TYPE)
+                    return self.async_show_form(
+                        step_id="user",
+                        data_schema=STEP_USER_DATA_SCHEMA,
+                        errors=errors,
                     )
-                    await self.hass.async_add_executor_job(api.authenticate)
+                
+                api = FurbulousCatAPI(
+                    email=user_input[CONF_EMAIL],
+                    password=user_input[CONF_PASSWORD],
+                    account_type=user_input.get(CONF_ACCOUNT_TYPE, DEFAULT_ACCOUNT_TYPE)
+                )
+                
+                _LOGGER.debug("Attempting authentication for email: %s", user_input[CONF_EMAIL])
+                await self.hass.async_add_executor_job(api.authenticate)
+                _LOGGER.info("Authentication successful for %s", user_input[CONF_EMAIL])
 
                 # Create the entry
                 await self.async_set_unique_id(user_input[CONF_EMAIL])
@@ -79,10 +98,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     data=user_input,
                 )
 
-            except FurbulousCatAuthError:
+            except FurbulousCatAuthError as err:
+                _LOGGER.error("Authentication failed: %s", err)
+                _LOGGER.debug("Full authentication error details:", exc_info=True)
                 errors["base"] = "invalid_auth"
-            except Exception:  # pylint: disable=broad-except
-                _LOGGER.exception("Unexpected exception")
+            except Exception as err:  # pylint: disable=broad-except
+                _LOGGER.exception("Unexpected exception during config flow: %s", err)
                 errors["base"] = "unknown"
 
         return self.async_show_form(
