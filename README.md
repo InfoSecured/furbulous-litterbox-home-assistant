@@ -4,181 +4,181 @@
 [![GitHub release](https://img.shields.io/github/release/fabienbounoir/furbulous-litterbox-home-assistant.svg)](https://github.com/fabienbounoir/furbulous-litterbox-home-assistant/releases)
 [![HomeKit Compatible](https://img.shields.io/badge/HomeKit-Compatible-blue.svg)](docs/HOMEKIT_COMPATIBILITY.md)
 
-Intégration complète pour les litières connectées **Furbulous Cat** dans Home Assistant avec support HomeKit.
+Full integration for **Furbulous Cat** smart litter boxes in Home Assistant with HomeKit support.
 
 ---
 
-## 🎯 Fonctionnalités
+## 🎯 Features
 
 ### ✅ Version 1.0.0
-- ✅ **Authentication** - Connexion avec email/password ou token direct
-- ✅ **Device Discovery** - Détection automatique des litières
-- ✅ **22 Sensors** - Poids, utilisations, état, modes, versions, pet info, etc.
-- ✅ **10 Binary Sensors** - Connectivité, erreurs, modes, chat dans litière
-- ✅ **4 Buttons** - Nettoyage, vidage, emballage, DND
-- ✅ **4 Switches** - Contrôles HomeKit (auto clean, mode auto, DND, child lock)
-- ✅ **Pet Sensors** - Informations complètes sur chaque chat
-- ✅ **Error Detection** - 11 codes d'erreur avec sévérité
-- ✅ **Fast Updates** - Chat dans litière : **30 secondes** / Autres : 5 minutes
-- ✅ **HomeKit Support** - Compatible avec HomeKit Bridge + Siri
-- ✅ **Auto Token Refresh** - Renouvellement automatique du token
+- ✅ **Authentication** - Login with email/password or direct token
+- ✅ **Device Discovery** - Automatic litter box detection
+- ✅ **22 Sensors** - Weight, uses, status, modes, versions, pet info, etc.
+- ✅ **10 Binary Sensors** - Connectivity, errors, modes, cat in litter box
+- ✅ **4 Buttons** - Cleaning, emptying, packing, DND
+- ✅ **4 Switches** - HomeKit controls (auto clean, full auto mode, DND, child lock)
+- ✅ **Pet Sensors** - Complete information for each cat
+- ✅ **Error Detection** - 11 error codes with severity
+- ✅ **Fast Updates** - Cat in litter box: **30 seconds** / Others: 5 minutes
+- ✅ **HomeKit Support** - Compatible with HomeKit Bridge + Siri
+- ✅ **Auto Token Refresh** - Automatic token renewal
 
-### 📊 Total: ~40 entités par installation
-- 22 sensors (état, poids, utilisations, versions, pet info, etc.)
-- 10 binary_sensors (connectivité, modes, erreurs, présence chat)
-- 4 buttons (contrôle manuel)
-- 4 switches (contrôle HomeKit)
-- 1+ pet sensors (un par chat)
+### 📊 Total: ~40 entities per installation
+- 22 sensors (status, weight, uses, versions, pet info, etc.)
+- 10 binary_sensors (connectivity, modes, errors, cat presence)
+- 4 buttons (manual control)
+- 4 switches (HomeKit control)
+- 1+ pet sensors (one per cat)
 
 ---
 
 ## 📦 Installation
 
-### Option 1: HACS (Recommandé)
+### Option 1: HACS (Recommended)
 
-1. **Ouvrir HACS** dans Home Assistant
-2. Aller dans **Intégrations**
-3. Cliquer sur les **3 points** en haut à droite → **Dépôts personnalisés**
-4. Ajouter l'URL : `https://github.com/fabienbounoir/furbulous-litterbox-home-assistant`
-5. Catégorie : **Integration**
-6. Rechercher "Furbulous Cat"
-7. Cliquer sur **Télécharger**
-8. Redémarrer Home Assistant
+1. **Open HACS** in Home Assistant
+2. Go to **Integrations**
+3. Click the **3 dots** top right → **Custom repositories**
+4. Add URL: `https://github.com/fabienbounoir/furbulous-litterbox-home-assistant`
+5. Category: **Integration**
+6. Search for "Furbulous Cat"
+7. Click **Download**
+8. Restart Home Assistant
 
-### Option 2: Installation manuelle
+### Option 2: Manual installation
 
-1. **Copier les fichiers**
+1. **Copy files**
    ```bash
    cd /path/to/homeassistant/config
    mkdir -p custom_components
    cp -r custom_components/furbulous custom_components/
    ```
 
-2. **Redémarrer Home Assistant**
-   - Via UI: **Paramètres** → **Système** → **Redémarrer**
+2. **Restart Home Assistant**
+   - Via UI: **Settings** → **System** → **Restart**
 
 ### Configuration
 
-1. **Ajouter l'intégration**
-   - **Paramètres** → **Appareils et services** → **Ajouter une intégration**
-   - Rechercher "Furbulous Cat"
-   - Entrer email + mot de passe (compte Furbulous)
+1. **Add the integration**
+   - **Settings** → **Devices & Services** → **Add Integration**
+   - Search "Furbulous Cat"
+   - Enter email + password (Furbulous account)
 
-2. **HomeKit (Optionnel)**
-   - Voir [HOMEKIT_COMPATIBILITY.md](docs/HOMEKIT_COMPATIBILITY.md)
-   - Exposer les switches et binary sensors recommandés
-   - Contrôler avec Siri et l'app Maison
+2. **HomeKit (Optional)**
+   - See [HOMEKIT_COMPATIBILITY.md](docs/HOMEKIT_COMPATIBILITY.md)
+   - Expose recommended switches and binary sensors
+   - Control with Siri and Home app
 
 ---
 
-## 📊 Entités principales
+## 📊 Main Entities
 
 ### 🔘 Switches (HomeKit Compatible)
-- `switch.furbulous_box_nettoyage_automatique` - Nettoyage auto après utilisation
-- `switch.furbulous_box_mode_auto_complet` - Mode auto complet
-- `switch.furbulous_box_ne_pas_deranger` - Mode silencieux (nuit)
-- `switch.furbulous_box_verrouillage_enfant` - Sécurité enfants
+- `switch.furbulous_box_automatic_cleaning` - Auto clean after use
+- `switch.furbulous_box_full_auto_mode` - Full auto mode
+- `switch.furbulous_box_do_not_disturb` - Silent mode (night)
+- `switch.furbulous_box_child_lock` - Child safety lock
 
 ### 🔴 Binary Sensors
-- ⭐ `binary_sensor.furbulous_box_chat_dans_la_litiere` - Détection chat (**30s**)
-- `binary_sensor.furbulous_box_connecte` - État connexion
-- `binary_sensor.furbulous_box_erreur` - Détection erreurs
-- `binary_sensor.furbulous_box_boite_poubelle_pleine` - Bac à déchets plein
+- ⭐ `binary_sensor.furbulous_box_cat_in_litter_box` - Cat detection (**30s**)
+- `binary_sensor.furbulous_box_connected` - Connection status
+- `binary_sensor.furbulous_box_error` - Error detection
+- `binary_sensor.furbulous_box_waste_bin_full` - Waste bin full
 
 ### 📊 Sensors
-- `sensor.furbulous_box_poids_du_chat` - Poids en grammes
-- `sensor.furbulous_box_utilisations_quotidiennes` - Nombre d'utilisations
-- `sensor.furbulous_box_etat_de_fonctionnement` - État (Idle/Working/Cleaning)
-- `sensor.furbulous_box_erreur` - Code erreur détaillé
-- `sensor.furbulous_cat_<nom>` - Infos chat (âge, poids, race)
+- `sensor.furbulous_box_cat_weight` - Weight in grams
+- `sensor.furbulous_box_daily_uses` - Number of uses
+- `sensor.furbulous_box_operating_status` - Status (Idle/Working/Cleaning)
+- `sensor.furbulous_box_error` - Detailed error code
+- `sensor.furbulous_cat_<name>` - Cat info (age, weight, breed)
 
 ### 🔘 Buttons
-- `button.furbulous_box_manual_clean` - Nettoyage manuel
-- `button.furbulous_box_vider` - Vider le bac
-- `button.furbulous_box_emballage_automatique` - Emballage auto
+- `button.furbulous_box_manual_clean` - Manual cleaning
+- `button.furbulous_box_empty` - Empty the bin
+- `button.furbulous_box_auto_pack` - Automatic packing
 
-[📖 Liste complète des 40+ entités](docs/INSTALLATION.md)
+[📖 Full list of 40+ entities](docs/INSTALLATION.md)
 
 ---
 
 ## 🏠 HomeKit
 
-L'intégration est **100% compatible** avec HomeKit Bridge :
+The integration is **100% compatible** with HomeKit Bridge:
 
-✅ **4 switches** - Contrôle complet via Siri et app Maison  
-✅ **Binary sensor chat** - Détection présence toutes les 30 secondes  
-✅ **Binary sensors alertes** - Erreurs, bac plein, connexion  
+✅ **4 switches** - Full control via Siri and Home app  
+✅ **Binary sensor cat** - Presence detection every 30 seconds  
+✅ **Binary sensors alerts** - Errors, bin full, connection  
 
-**Commandes Siri :**
-- *"Dis Siri, active le nettoyage automatique"*
-- *"Dis Siri, est-ce que le chat est dans la litière ?"*
+**Siri commands:**
+- *"Hey Siri, turn on automatic cleaning"*
+- *"Hey Siri, is the cat in the litter box?"*
 
-[📖 Guide complet HomeKit](docs/HOMEKIT_COMPATIBILITY.md)
+[📖 Full HomeKit guide](docs/HOMEKIT_COMPATIBILITY.md)
 
 ---
 
-## 🎨 Exemples d'automatisations
+## 🎨 Automation Examples
 
-### Notification présence chat
+### Cat presence notification
 ```yaml
 automation:
-  - alias: "Chat détecté dans litière"
+  - alias: "Cat detected in litter box"
     trigger:
       platform: state
-      entity_id: binary_sensor.furbulous_box_chat_dans_la_litiere
+      entity_id: binary_sensor.furbulous_box_cat_in_litter_box
       to: 'on'
     action:
       service: notify.mobile_app
       data:
-        message: "🐱 Milo utilise la litière"
+        message: "🐱 Milo is using the litter box"
 ```
 
-### DND automatique la nuit
+### Night DND
 ```yaml
 automation:
-  - alias: "DND nocturne"
+  - alias: "Night DND"
     trigger:
       - platform: time
         at: "22:00:00"
     action:
       service: switch.turn_on
       target:
-        entity_id: switch.furbulous_box_ne_pas_deranger
+        entity_id: switch.furbulous_box_do_not_disturb
 ```
 
-### Alerte bac plein
+### Waste bin full alert
 ```yaml
 automation:
-  - alias: "Bac à déchets plein"
+  - alias: "Waste bin full"
     trigger:
       platform: state
-      entity_id: binary_sensor.furbulous_box_boite_poubelle_pleine
+      entity_id: binary_sensor.furbulous_box_waste_bin_full
       to: 'on'
     action:
       service: notify.mobile_app
       data:
-        title: "�️ Furbulous"
-        message: "Le bac à déchets est plein - Vider maintenant"
+        title: "🗑️ Furbulous"
+        message: "The waste bin is full - Please empty it now"
 ```
 
-[📖 Plus d'exemples](docs/EXAMPLES.md)
+[📖 More examples](docs/EXAMPLES.md)
 
 ---
 
-## 🔄 Mises à jour
+## 🔄 Updates
 
-| Intervalle | Entités concernées |
+| Interval | Affected Entities |
 |------------|-------------------|
-| **30 secondes** | Chat dans litière (binary_sensor) |
-| **5 minutes** | Tous les autres capteurs |
+| **30 seconds** | Cat in litter box (binary_sensor) |
+| **5 minutes** | All other sensors |
 
-Le capteur de présence du chat utilise un **coordinateur rapide** pour une détection quasi temps-réel.
+The cat presence sensor uses a **fast coordinator** for near real-time detection.
 
 ---
 
-## 🔍 Codes d'erreur
+## 🔍 Error Codes
 
-| Code | Message | Sévérité |
+| Code | Message | Severity |
 |------|---------|----------|
 | 0 | No error | info |
 | 1 | Weight sensor error | warning |
@@ -196,39 +196,39 @@ Le capteur de présence du chat utilise un **coordinateur rapide** pour une dét
 
 ## 📚 Documentation
 
-- **[INSTALLATION.md](docs/INSTALLATION.md)** - Guide installation détaillé
-- **[API_ENDPOINTS.md](docs/API_ENDPOINTS.md)** - 86 endpoints API documentés
+- **[INSTALLATION.md](docs/INSTALLATION.md)** - Detailed installation guide
+- **[API_ENDPOINTS.md](docs/API_ENDPOINTS.md)** - 86 documented API endpoints
 
 ---
 
-## 🤝 Contribution
+## 🤝 Contributing
 
-Les contributions sont les bienvenues ! 
+Contributions are welcome! 
 
-1. Fork le projet
-2. Créer une branche (`git checkout -b feature/amazing`)
-3. Commit (`git commit -m 'Add amazing feature'`)
-4. Push (`git push origin feature/amazing`)
-5. Ouvrir une Pull Request
-
----
-
-## 📄 Licence
-
-Ce projet est sous licence MIT - voir [LICENSE](LICENSE)
+1. Fork the project  
+2. Create a branch (`git checkout -b feature/amazing`)  
+3. Commit your changes (`git commit -m 'Add amazing feature'`)  
+4. Push (`git push origin feature/amazing`)  
+5. Open a Pull Request
 
 ---
 
-## 🙏 Remerciements
+## 📄 License
 
-- API Furbulous pour la litière connectée
-- Communauté Home Assistant
-- Tous les contributeurs
+This project is licensed under MIT - see [LICENSE](LICENSE)
+
+---
+
+## 🙏 Acknowledgments
+
+- Furbulous API for the smart litter box  
+- Home Assistant community  
+- All contributors
 
 ---
 
 **Version**: 1.0.0  
 **Status**: ✅ Production Ready  
-**Auteur**: [@fabienbounoir](https://github.com/fabienbounoir)  
+**Author**: [@fabienbounoir](https://github.com/fabienbounoir)  
 **HomeKit**: ✅ Compatible  
-**HACS**: ✅ Supporté
+**HACS**: ✅ Supported

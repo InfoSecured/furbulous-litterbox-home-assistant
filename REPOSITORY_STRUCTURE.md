@@ -1,115 +1,115 @@
-# 📦 Structure du Repository GitHub
+# 📦 GitHub Repository Structure
 
-## ✅ Fichiers qui SERONT publiés sur GitHub
+## ✅ Files that WILL be published on GitHub
 
 ```
 furbulous-ha/
 ├── .gitignore                   # Exclusions
-├── LICENSE                      # Licence MIT
-├── README.md                    # Documentation principale
-├── hacs.json                    # Configuration HACS
+├── LICENSE                      # MIT License
+├── README.md                    # Main documentation
+├── hacs.json                    # HACS configuration
 │
 ├── custom_components/
 │   └── furbulous/
-│       ├── __init__.py          # Entry point + coordinateurs
-│       ├── manifest.json        # Métadonnées intégration (v1.0.0)
-│       ├── strings.json         # Traductions FR
-│       ├── config_flow.py       # Configuration UI
-│       ├── const.py             # Constantes
+│       ├── __init__.py          # Entry point + coordinators
+│       ├── manifest.json        # Integration metadata (v1.0.0)
+│       ├── strings.json         # FR translations
+│       ├── config_flow.py       # UI configuration
+│       ├── const.py             # Constants
 │       ├── device.py            # Device info helper
-│       ├── furbulous_api.py     # Client API
+│       ├── furbulous_api.py     # API client
 │       ├── sensor.py            # 22 sensors
 │       ├── binary_sensor.py     # 10 binary sensors
 │       ├── button.py            # 4 buttons
 │       └── switch.py            # 4 switches (HomeKit)
 │
 └── docs/
-    ├── API_DOCUMENTATION.md     # Documentation API complète
-    ├── API_ENDPOINTS.md         # 86 endpoints documentés
-    ├── CHANGELOG.md             # Historique versions
-    ├── ENDPOINTS_STATUS.md      # Statut implémentation
-    ├── EXAMPLES.md              # Exemples d'utilisation
-    ├── HOMEKIT_COMPATIBILITY.md # Guide HomeKit complet
-    ├── IMPLEMENTATION_SUMMARY.md# Résumé technique
-    ├── INSTALLATION.md          # Guide installation
-    ├── NEW_FEATURES.md          # Nouvelles fonctionnalités
-    ├── PROJECT_STRUCTURE.md     # Architecture projet
-    └── TROUBLESHOOTING.md       # Dépannage
+    ├── API_DOCUMENTATION.md     # Complete API documentation
+    ├── API_ENDPOINTS.md         # 86 documented endpoints
+    ├── CHANGELOG.md             # Version history
+    ├── ENDPOINTS_STATUS.md      # Implementation status
+    ├── EXAMPLES.md              # Usage examples
+    ├── HOMEKIT_COMPATIBILITY.md # Complete HomeKit guide
+    ├── IMPLEMENTATION_SUMMARY.md# Technical summary
+    ├── INSTALLATION.md          # Installation guide
+    ├── NEW_FEATURES.md          # New features
+    ├── PROJECT_STRUCTURE.md     # Project architecture
+    └── TROUBLESHOOTING.md       # Troubleshooting
 ```
 
-## ❌ Fichiers qui NE SERONT PAS publiés (exclus via .gitignore)
+## ❌ Files that WILL NOT be published (excluded via .gitignore)
 
-### Environnement de développement
-- `.venv/` - Environnement virtuel Python
-- `__pycache__/` - Fichiers Python compilés
-- `*.pyc`, `*.pyo` - Bytecode Python
+### Development environment
+- `.venv/` - Python virtual environment
+- `__pycache__/` - Compiled Python files
+- `*.pyc`, `*.pyo` - Python bytecode
 
-### Configuration Home Assistant
-- `config/` - Dossier de configuration HA de test
-- `*.db`, `*.db-shm`, `*.db-wal` - Bases de données
-- `*.log` - Fichiers de logs
-- `secrets.yaml` - Secrets utilisateur
+### Home Assistant configuration
+- `config/` - Test HA configuration folder
+- `*.db`, `*.db-shm`, `*.db-wal` - Databases
+- `*.log` - Log files
+- `secrets.yaml` - User secrets
 
-### Fichiers de développement uniquement
-- `resources/` - Ressources de développement
-- `sources/` - Sources APK décompilées
-- `HACS_CHECKLIST.md` - Checklist interne
-- `RELEASE_NOTES_*.md` - Notes de release internes
+### Development-only files
+- `resources/` - Development resources
+- `sources/` - Decompiled APK sources
+- `HACS_CHECKLIST.md` - Internal checklist
+- `RELEASE_NOTES_*.md` - Internal release notes
 
-### Fichiers système
-- `.DS_Store` - Métadonnées macOS
-- `.vscode/`, `.idea/` - Configs éditeurs
+### System files
+- `.DS_Store` - macOS metadata
+- `.vscode/`, `.idea/` - Editor configs
 
-## 📊 Statistiques du repository
+## 📊 Repository statistics
 
-**Fichiers publiés :**
+**Published files:**
 - 1 README.md
 - 1 LICENSE
 - 1 hacs.json
-- 12 fichiers Python (custom_components/furbulous/)
-- 11 fichiers documentation (docs/)
-- **Total : ~26 fichiers**
+- 12 Python files (custom_components/furbulous/)
+- 11 documentation files (docs/)
+- **Total: ~26 files**
 
-**Taille estimée :** ~500 KB
+**Estimated size:** ~500 KB
 
-## 🎯 Structure optimale pour HACS
+## 🎯 Optimal structure for HACS
 
-✅ Tous les fichiers essentiels pour HACS sont inclus  
-✅ Fichiers de développement exclus  
-✅ Configuration utilisateur exclue  
-✅ Documentation complète incluse  
-✅ Code source propre et organisé  
+✅ All essential files for HACS are included  
+✅ Development files excluded  
+✅ User configuration excluded  
+✅ Complete documentation included  
+✅ Clean and organized source code  
 
-## 🚀 Commandes Git
+## 🚀 Git commands
 
-### Initialiser le repository
+### Initialize the repository
 ```bash
 git init
 git add .
 git commit -m "Initial commit v1.0.0 - HomeKit Support"
 ```
 
-### Créer la branche main et push
+### Create the main branch and push
 ```bash
 git branch -M main
 git remote add origin https://github.com/fabienbounoir/furbulous-ha.git
 git push -u origin main
 ```
 
-### Créer un tag de version
+### Create a version tag
 ```bash
 git tag -a v1.0.0 -m "Release v1.0.0 - HomeKit Support"
 git push origin v1.0.0
 ```
 
-## ✅ Vérification finale
+## ✅ Final verification
 
-Avant de publier, vérifier que :
-- [ ] `.gitignore` exclut bien config/, resources/, sources/
-- [ ] Tous les fichiers __pycache__ sont exclus
-- [ ] README.md est à jour avec badges
-- [ ] manifest.json indique version 1.0.0
-- [ ] hacs.json est complet
-- [ ] Documentation est complète
+Before publishing, verify that:
+- [ ] `.gitignore` correctly excludes config/, resources/, sources/
+- [ ] All __pycache__ files are excluded
+- [ ] README.md is up to date with badges
+- [ ] manifest.json indicates version 1.0.0
+- [ ] hacs.json is complete
+- [ ] Documentation is complete
 
-**Le repository est prêt pour publication ! 🎉**
+**The repository is ready for publication! 🎉**

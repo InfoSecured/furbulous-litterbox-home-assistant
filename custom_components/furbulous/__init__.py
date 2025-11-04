@@ -44,11 +44,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         except FurbulousCatAuthError as err:
             raise ConfigEntryAuthFailed from err
 
-    # Coordinateur normal (5 minutes) pour les données générales
+    # Regular coordinator (5 minutes) for general data
     coordinator = FurbulousCatDataUpdateCoordinator(hass, api)
     await coordinator.async_config_entry_first_refresh()
     
-    # Coordinateur rapide (30 secondes) pour la détection du chat dans la litière
+    # Fast coordinator (30 seconds) for detecting the cat in the litter box
     fast_coordinator = FurbulousCatFastUpdateCoordinator(hass, api)
     await fast_coordinator.async_config_entry_first_refresh()
 
@@ -104,7 +104,7 @@ class FurbulousCatFastUpdateCoordinator(DataUpdateCoordinator):
             hass,
             _LOGGER,
             name=f"{DOMAIN}_fast",
-            update_interval=timedelta(seconds=30),  # Mise à jour rapide toutes les 30 secondes
+            update_interval=timedelta(seconds=30),  # Fast refresh every 30 seconds
         )
 
     async def _async_update_data(self):

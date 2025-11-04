@@ -50,28 +50,28 @@ async def async_setup_entry(
         if iotid:
             entities.extend([
                 # Weight and usage
-                FurbulousCatPropertySensor(coordinator, device_id, "catWeight", "Poids du chat"),
-                FurbulousCatPropertySensor(coordinator, device_id, "excreteTimesEveryday", "Utilisations quotidiennes"),
-                FurbulousCatPropertySensor(coordinator, device_id, "excreteTimerEveryday", "Durée quotidienne"),
-                
+                FurbulousCatPropertySensor(coordinator, device_id, "catWeight", "Cat weight"),
+                FurbulousCatPropertySensor(coordinator, device_id, "excreteTimesEveryday", "Daily uses"),
+                FurbulousCatPropertySensor(coordinator, device_id, "excreteTimerEveryday", "Daily duration"),
+
                 # Status sensors
-                FurbulousCatPropertySensor(coordinator, device_id, "workstatus", "État de fonctionnement"),
-                FurbulousCatPropertySensor(coordinator, device_id, "errorReportEvent", "Erreur"),
-                FurbulousCatPropertySensor(coordinator, device_id, "completionStatus", "Statut de complétude"),
-                
+                FurbulousCatPropertySensor(coordinator, device_id, "workstatus", "Operating status"),
+                FurbulousCatPropertySensor(coordinator, device_id, "errorReportEvent", "Error"),
+                FurbulousCatPropertySensor(coordinator, device_id, "completionStatus", "Completion status"),
+
                 # Settings sensors
-                FurbulousCatPropertySensor(coordinator, device_id, "catLitterType", "Type de litière"),
-                FurbulousCatPropertySensor(coordinator, device_id, "FullAutoModeSwitch", "Mode auto complet"),
-                FurbulousCatPropertySensor(coordinator, device_id, "catCleanOnOff", "Nettoyage auto"),
-                FurbulousCatPropertySensor(coordinator, device_id, "childLockOnOff", "Verrouillage enfant"),
-                FurbulousCatPropertySensor(coordinator, device_id, "masterSleepOnOff", "Mode sommeil"),
-                FurbulousCatPropertySensor(coordinator, device_id, "DisplaySwitch", "Affichage"),
-                FurbulousCatPropertySensor(coordinator, device_id, "handMode", "Mode manuel"),
-                
+                FurbulousCatPropertySensor(coordinator, device_id, "catLitterType", "Litter type"),
+                FurbulousCatPropertySensor(coordinator, device_id, "FullAutoModeSwitch", "Full auto mode"),
+                FurbulousCatPropertySensor(coordinator, device_id, "catCleanOnOff", "Automatic cleaning"),
+                FurbulousCatPropertySensor(coordinator, device_id, "childLockOnOff", "Child lock"),
+                FurbulousCatPropertySensor(coordinator, device_id, "masterSleepOnOff", "Sleep mode"),
+                FurbulousCatPropertySensor(coordinator, device_id, "DisplaySwitch", "Display"),
+                FurbulousCatPropertySensor(coordinator, device_id, "handMode", "Manual mode"),
+
                 # Version sensors
-                FurbulousCatPropertySensor(coordinator, device_id, "mcuversion", "Version MCU"),
-                FurbulousCatPropertySensor(coordinator, device_id, "wifivertion", "Version WiFi"),
-                FurbulousCatPropertySensor(coordinator, device_id, "trdversion", "Version TRD"),
+                FurbulousCatPropertySensor(coordinator, device_id, "mcuversion", "MCU version"),
+                FurbulousCatPropertySensor(coordinator, device_id, "wifivertion", "WiFi version"),
+                FurbulousCatPropertySensor(coordinator, device_id, "trdversion", "TRD version"),
             ])
     
     # Add pet sensors
@@ -149,9 +149,9 @@ class FurbulousCatDeviceSensor(CoordinatorEntity, SensorEntity):
         if device:
             device_name = device.get("name", f"Device {self._device_id}")
             sensor_names = {
-                "status": "État",
-                "online": "Connexion",
-                "last_active": "Dernière activité",
+                "status": "Status",
+                "online": "Connection",
+                "last_active": "Last activity",
             }
             return f"{device_name} - {sensor_names.get(self._sensor_type, self._sensor_type)}"
         return f"Furbulous Device {self._device_id}"
@@ -166,14 +166,14 @@ class FurbulousCatDeviceSensor(CoordinatorEntity, SensorEntity):
         if self._sensor_type == "status":
             return "Active" if device.get("device_online") == 1 else "Inactive"
         elif self._sensor_type == "online":
-            return "En ligne" if device.get("device_online") == 1 else "Hors ligne"
+            return "Online" if device.get("device_online") == 1 else "Offline"
         elif self._sensor_type == "last_active":
             timestamp = device.get("active_time")
             if timestamp:
                 # Return datetime object with UTC timezone for TIMESTAMP device class
                 return datetime.fromtimestamp(timestamp, tz=timezone.utc)
             return None
-        
+
         return None
 
     @property
@@ -280,37 +280,37 @@ class FurbulousCatPropertySensor(CoordinatorEntity, SensorEntity):
         if self._property_key == "catWeight":
             # Weight in grams
             return int(value) if value is not None else None
-        
+
         elif self._property_key == "workstatus":
             # Work status mapping
-            return WORK_STATUS.get(value, f"Inconnu ({value})")
-        
+            return WORK_STATUS.get(value, f"Unknown ({value})")
+
         elif self._property_key == "catLitterType":
             # Litter type mapping
-            return LITTER_TYPE.get(value, f"Inconnu ({value})")
-        
+            return LITTER_TYPE.get(value, f"Unknown ({value})")
+
         elif self._property_key == "errorReportEvent":
             # Error code mapping
-            return ERROR_CODES.get(value, f"Erreur {value}")
-        
-        elif self._property_key in ["FullAutoModeSwitch", "catCleanOnOff", "childLockOnOff", 
-                                     "masterSleepOnOff", "DisplaySwitch", "handMode", 
+            return ERROR_CODES.get(value, f"Error {value}")
+
+        elif self._property_key in ["FullAutoModeSwitch", "catCleanOnOff", "childLockOnOff",
+                                     "masterSleepOnOff", "DisplaySwitch", "handMode",
                                      "completionStatus"]:
             # Boolean switches
-            return "Activé" if value == 1 else "Désactivé"
-        
+            return "Enabled" if value == 1 else "Disabled"
+
         elif self._property_key == "mcuversion":
             # MCU version (might be hex encoded)
             return str(value)
-        
+
         elif self._property_key == "wifivertion":
             # WiFi version
             return str(value)
-        
+
         elif self._property_key in ["excreteTimesEveryday", "excreteTimerEveryday"]:
             # Usage statistics
             return int(value) if value is not None else None
-        
+
         return value
 
     @property

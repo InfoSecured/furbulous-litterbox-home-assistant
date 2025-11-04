@@ -85,7 +85,7 @@ class FurbulousCatDumpButton(ButtonEntity):
         self.coordinator = coordinator
         self.device_data = device
         self._attr_unique_id = f"{device['iotid']}_dump"
-        self._attr_name = f"{device['name']} Vider"
+        self._attr_name = f"{device['name']} Empty"
         self._attr_icon = "mdi:delete-empty"
         self._attr_device_info = get_device_info(device)
 
@@ -118,7 +118,7 @@ class FurbulousCatAutoPackButton(ButtonEntity):
         self.coordinator = coordinator
         self.device_data = device
         self._attr_unique_id = f"{device['iotid']}_auto_pack"
-        self._attr_name = f"{device['name']} Emballage automatique"
+        self._attr_name = f"{device['name']} Auto-Pack"
         self._attr_icon = "mdi:package-variant-closed"
         self._attr_device_info = get_device_info(device)
 

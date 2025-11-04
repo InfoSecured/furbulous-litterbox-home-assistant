@@ -72,7 +72,7 @@ class FurbulousCatAPI:
             "appid": API_APPID,
             "version": API_VERSION,
             "accept": "*/*",
-            "accept-language": "fr",
+            "accept-language": "en",
             "platform": "ios",  # Use ios like in captured request
             "user-agent": API_USER_AGENT,
             "ts": str(timestamp),
@@ -122,7 +122,7 @@ class FurbulousCatAPI:
             "accept": "*/*",
             "version": API_VERSION,
             "authorization": self.token,
-            "accept-language": "fr",
+            "accept-language": "en",
             "platform": "ios",  # Use ios instead of android
             "user-agent": API_USER_AGENT,
             "ts": str(timestamp),

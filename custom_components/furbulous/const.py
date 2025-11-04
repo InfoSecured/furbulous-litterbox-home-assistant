@@ -3,7 +3,7 @@
 DOMAIN = "furbulous"
 
 # API Constants
-API_BASE_URL = "https://app.api.fr.furbulouspet.com:1443"
+API_BASE_URL = "https://app.api.us.furbulouspet.com:1443"
 API_AUTH_ENDPOINT = "/app/v1/auth/login"
 API_DEVICE_LIST_ENDPOINT = "/app/v1/device/list"
 API_DEVICE_PROPERTIES_ENDPOINT = "/app/v1/device/properties/get"
@@ -74,4 +74,4 @@ ERROR_SEVERITY = {
 # Unit of measurement
 UNIT_GRAMS = "g"
 UNIT_SECONDS = "s"
-UNIT_TIMES = "fois"
+UNIT_TIMES = "times"

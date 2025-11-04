@@ -51,7 +51,7 @@ class FurbulousCatAutoCleanSwitch(CoordinatorEntity, SwitchEntity):
         super().__init__(coordinator)
         self.device_data = device
         self._attr_unique_id = f"{device['iotid']}_auto_clean_switch"
-        self._attr_name = f"{device['name']} - Nettoyage automatique"
+        self._attr_name = f"{device['name']} - Automatic cleaning"
         self._attr_icon = "mdi:robot-vacuum"
         self._attr_device_info = get_device_info(device)
 
@@ -108,7 +108,7 @@ class FurbulousCatFullAutoModeSwitch(CoordinatorEntity, SwitchEntity):
         super().__init__(coordinator)
         self.device_data = device
         self._attr_unique_id = f"{device['iotid']}_full_auto_mode_switch"
-        self._attr_name = f"{device['name']} - Mode auto complet"
+        self._attr_name = f"{device['name']} - Full auto mode"
         self._attr_icon = "mdi:auto-mode"
         self._attr_device_info = get_device_info(device)
 
@@ -165,7 +165,7 @@ class FurbulousCatDNDSwitch(CoordinatorEntity, SwitchEntity):
         super().__init__(coordinator)
         self.device_data = device
         self._attr_unique_id = f"{device['iotid']}_dnd_switch"
-        self._attr_name = f"{device['name']} - Ne pas déranger"
+        self._attr_name = f"{device['name']} - Do Not Disturb"
         self._attr_icon = "mdi:moon-waning-crescent"
         self._attr_device_info = get_device_info(device)
 
@@ -217,7 +217,7 @@ class FurbulousCatChildLockSwitch(CoordinatorEntity, SwitchEntity):
         super().__init__(coordinator)
         self.device_data = device
         self._attr_unique_id = f"{device['iotid']}_child_lock_switch"
-        self._attr_name = f"{device['name']} - Verrouillage enfant"
+        self._attr_name = f"{device['name']} - Child lock"
         self._attr_icon = "mdi:lock"
         self._attr_device_info = get_device_info(device)
 
