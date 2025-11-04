@@ -28,13 +28,12 @@ class FurbulousCatAuthError(Exception):
 class FurbulousCatAPI:
     """API client for Furbulous Cat."""
 
-    def __init__(self, email: str, password: str, account_type: int = 1, token: str = None, region: str = "US") -> None:
+    def __init__(self, email: str, password: str, account_type: int = 1, token: str = None) -> None:
         """Initialize the API client."""
         self.email = email
         self.password = password
         self.account_type = account_type
-        self.token = token
-        self.region = region  # Add this
+        self.token = token  # Allow pre-set token
         self.identity_id = None
         self.session = requests.Session()
         self.devices = []
