@@ -15,12 +15,15 @@ from .furbulous_api import FurbulousCatAPI, FurbulousCatAuthError
 
 _LOGGER = logging.getLogger(__name__)
 
+from .const import CONF_ACCOUNT_TYPE, CONF_TOKEN, CONF_REGION, DEFAULT_ACCOUNT_TYPE, DEFAULT_REGION, DOMAIN
+
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
         vol.Optional(CONF_TOKEN): str,
         vol.Optional(CONF_EMAIL): str,
         vol.Optional(CONF_PASSWORD): str,
         vol.Optional(CONF_ACCOUNT_TYPE, default=DEFAULT_ACCOUNT_TYPE): int,
+        vol.Optional(CONF_REGION, default=DEFAULT_REGION): vol.In(["US", "EU", "CN"]),
     }
 )
 
@@ -45,10 +48,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     _LOGGER.debug("Using token authentication")
                     # Use token directly without authentication
                     api = FurbulousCatAPI(
-                        email="",
-                        password="",
-                        account_type=DEFAULT_ACCOUNT_TYPE,
-                        token=user_input[CONF_TOKEN]
+                        email=user_input[CONF_EMAIL],
+                        password=user_input[CONF_PASSWORD],
+                        account_type=user_input.get(CONF_ACCOUNT_TYPE, DEFAULT_ACCOUNT_TYPE),
+                        region=user_input.get(CONF_REGION, DEFAULT_REGION)
                     )
                     
                     _LOGGER.debug("Testing token by fetching device list")

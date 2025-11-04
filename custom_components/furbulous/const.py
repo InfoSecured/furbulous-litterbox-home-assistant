@@ -35,7 +35,7 @@ WORK_STATUS = {
 
 # Litter Type
 LITTER_TYPE = {
-    0: "Bentonite",
+    0: "Clay",
     1: "Tofu",
     2: "Mixed",
 }

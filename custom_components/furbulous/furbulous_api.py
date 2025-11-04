@@ -28,12 +28,13 @@ class FurbulousCatAuthError(Exception):
 class FurbulousCatAPI:
     """API client for Furbulous Cat."""
 
-    def __init__(self, email: str, password: str, account_type: int = 1, token: str = None) -> None:
+    def __init__(self, email: str, password: str, account_type: int = 1, token: str = None, region: str = "US") -> None:
         """Initialize the API client."""
         self.email = email
         self.password = password
         self.account_type = account_type
-        self.token = token  # Allow pre-set token
+        self.token = token
+        self.region = region  # Add this
         self.identity_id = None
         self.session = requests.Session()
         self.devices = []
@@ -51,20 +52,19 @@ class FurbulousCatAPI:
         """Authenticate with the Furbulous Cat API."""
         url = f"{API_BASE_URL}{API_AUTH_ENDPOINT}"
         
-        # Generate timestamp and signature for login request
         timestamp = int(time.time())
         sign = self._generate_sign(timestamp, API_AUTH_ENDPOINT)
         
         payload = {
+            "account_type": 1,
+            "area": "1",  # THIS IS THE KEY FIX - was "US", should be "1"
+            "account": self.email,
             "iso": "US",
-            "area": "US",
-            "account_type": self.account_type,
-            "clientid": "65l32f6ql1qehx6",  # From decompiled app
-            "brand": "HomeAssistant",
+            "AppVersion": "iPhone_26.0.1_2.0.1_202507031750",
+            "clientid": "65i0vItchd0liq0",
+            "brand": "Apple",
             "client_token": "",
             "password": self.password,
-            "AppVersion": "HomeAssistant_1.0.0",
-            "account": self.email
         }
         
         headers = {
@@ -73,7 +73,7 @@ class FurbulousCatAPI:
             "version": API_VERSION,
             "accept": "*/*",
             "accept-language": "en",
-            "platform": "ios",  # Use ios like in captured request
+            "platform": "ios",
             "user-agent": API_USER_AGENT,
             "ts": str(timestamp),
             "sign": sign,
@@ -83,31 +83,19 @@ class FurbulousCatAPI:
             _LOGGER.debug("=== AUTHENTICATION REQUEST ===")
             _LOGGER.debug("URL: %s", url)
             _LOGGER.debug("Account: %s", self.email)
-            _LOGGER.debug("Account Type: %s", self.account_type)
             _LOGGER.debug("Timestamp: %s", timestamp)
             _LOGGER.debug("Sign: %s", sign)
-            _LOGGER.debug("Headers: %s", {k: v for k, v in headers.items() if k != 'authorization'})
-            _LOGGER.debug("Payload keys: %s", list(payload.keys()))
             
             response = self.session.post(url, json=payload, headers=headers, timeout=10)
             
             _LOGGER.debug("Response status code: %s", response.status_code)
-            _LOGGER.debug("Response headers: %s", dict(response.headers))
-            
-            # Log response body even on error
-            try:
-                response_text = response.text
-                _LOGGER.debug("Response body: %s", response_text)
-            except:
-                pass
+            _LOGGER.debug("Response body: %s", response.text)
             
             response.raise_for_status()
             
             data = response.json()
             
-            _LOGGER.debug("Response JSON code: %s", data.get("code"))
-            _LOGGER.debug("Response JSON message: %s", data.get("message"))
-            _LOGGER.debug("Response JSON data keys: %s", list(data.get("data", {}).keys()) if isinstance(data.get("data"), dict) else "not a dict")
+            _LOGGER.debug("Response code: %s, message: %s", data.get("code"), data.get("message"))
             
             if data.get("code") != 0:
                 error_msg = data.get("message", "Unknown error")
@@ -115,7 +103,7 @@ class FurbulousCatAPI:
                 raise FurbulousCatAuthError(f"Authentication failed: {error_msg}")
             
             auth_data = data.get("data", {})
-            self.token = auth_data.get("token")  # Field name is 'token' not 'authorization'
+            self.token = auth_data.get("token")
             self.identity_id = auth_data.get("identityid")
             
             if not self.token:
@@ -127,19 +115,12 @@ class FurbulousCatAPI:
             _LOGGER.debug("Identity ID: %s", self.identity_id)
             return True
             
-        except requests.exceptions.HTTPError as err:
-            _LOGGER.error("HTTP error during authentication: %s", err)
-            if hasattr(err, 'response') and err.response is not None:
-                _LOGGER.error("Response status: %s", err.response.status_code)
-                _LOGGER.error("Response body: %s", err.response.text)
-            raise FurbulousCatAuthError(f"Authentication HTTP error: {err}") from err
         except requests.exceptions.RequestException as err:
-            _LOGGER.error("Network error during authentication: %s", err)
+            _LOGGER.error("Error during authentication: %s", err)
+            if hasattr(err, 'response') and err.response is not None:
+                _LOGGER.error("Response status: %s, body: %s", 
+                            err.response.status_code, err.response.text)
             raise FurbulousCatAuthError(f"Authentication request failed: {err}") from err
-        except Exception as err:
-            _LOGGER.error("Unexpected error during authentication: %s", type(err).__name__)
-            _LOGGER.debug("Full traceback:", exc_info=True)
-            raise FurbulousCatAuthError(f"Unexpected authentication error: {err}") from err
 
     def _get_headers(self, endpoint: str) -> dict:
         """Generate headers for authenticated requests."""

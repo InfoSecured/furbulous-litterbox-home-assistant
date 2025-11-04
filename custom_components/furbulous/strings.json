@@ -7,14 +7,20 @@
                 "data": {
                     "email": "Email",
                     "password": "Password",
-                    "account_type": "Account type"
+                    "account_type": "Account type",
+                    "region": "Region",
+                    "token": "Token (optional)"
+                },
+                "data_description": {
+                    "region": "Select the region where your account was registered"
                 }
             }
         },
         "error": {
-            "invalid_auth": "Invalid credentials",
+            "invalid_auth": "Invalid credentials or wrong region",
             "cannot_connect": "Unable to connect to the API",
-            "unknown": "Unexpected error"
+            "unknown": "Unexpected error",
+            "missing_credentials": "Please provide either a token or email and password"
         },
         "abort": {
             "already_configured": "This account is already configured"
