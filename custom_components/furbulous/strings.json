@@ -8,11 +8,7 @@
                     "email": "Email",
                     "password": "Password",
                     "account_type": "Account type",
-                    "region": "Region",
                     "token": "Token (optional)"
-                },
-                "data_description": {
-                    "region": "Select the region where your account was registered"
                 }
             }
         },

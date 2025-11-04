@@ -15,7 +15,7 @@ from .furbulous_api import FurbulousCatAPI, FurbulousCatAuthError
 
 _LOGGER = logging.getLogger(__name__)
 
-from .const import CONF_ACCOUNT_TYPE, CONF_TOKEN, CONF_REGION, DEFAULT_ACCOUNT_TYPE, DOMAIN
+from .const import CONF_ACCOUNT_TYPE, CONF_TOKEN, DEFAULT_ACCOUNT_TYPE, DOMAIN
 
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
