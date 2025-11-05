@@ -48,7 +48,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     coordinator = FurbulousCatDataUpdateCoordinator(hass, api)
     await coordinator.async_config_entry_first_refresh()
     
-    # Fast coordinator (30 seconds) for detecting the cat in the litter box
+    # Fast coordinator (20 seconds) for detecting the cat in the litter box
     fast_coordinator = FurbulousCatFastUpdateCoordinator(hass, api)
     await fast_coordinator.async_config_entry_first_refresh()
 
@@ -95,7 +95,7 @@ class FurbulousCatDataUpdateCoordinator(DataUpdateCoordinator):
 
 
 class FurbulousCatFastUpdateCoordinator(DataUpdateCoordinator):
-    """Class to manage fast fetching of cat presence data (30 seconds)."""
+    """Class to manage fast fetching of cat presence data (20 seconds)."""
 
     def __init__(self, hass: HomeAssistant, api: FurbulousCatAPI) -> None:
         """Initialize fast coordinator for cat detection."""
@@ -104,7 +104,7 @@ class FurbulousCatFastUpdateCoordinator(DataUpdateCoordinator):
             hass,
             _LOGGER,
             name=f"{DOMAIN}_fast",
-            update_interval=timedelta(seconds=30),  # Fast refresh every 30 seconds
+            update_interval=timedelta(seconds=20),  # Fast refresh every 20 seconds
         )
 
     async def _async_update_data(self):
