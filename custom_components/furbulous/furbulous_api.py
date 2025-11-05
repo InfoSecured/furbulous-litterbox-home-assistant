@@ -54,6 +54,15 @@ class FurbulousCatAPI:
         timestamp = int(time.time())
         sign = self._generate_sign(timestamp, API_AUTH_ENDPOINT)
         
+        # DEBUG: Log signature calculation
+        _LOGGER.debug("=== SIGNATURE CALCULATION ===")
+        _LOGGER.debug("APPID: %s", API_APPID)
+        _LOGGER.debug("Endpoint: %s", API_AUTH_ENDPOINT)
+        _LOGGER.debug("Timestamp: %s", timestamp)
+        sign_input = f"{API_APPID}{API_AUTH_ENDPOINT}{timestamp}"
+        _LOGGER.debug("Sign input string: %s", sign_input)
+        _LOGGER.debug("Generated sign: %s", sign)
+        
         payload = {
             "account_type": 1,
             "area": "1",
@@ -81,9 +90,8 @@ class FurbulousCatAPI:
         try:
             _LOGGER.debug("=== AUTHENTICATION REQUEST ===")
             _LOGGER.debug("URL: %s", url)
-            _LOGGER.debug("Account: %s", self.email)
-            _LOGGER.debug("Timestamp: %s", timestamp)
-            _LOGGER.debug("Sign: %s", sign)
+            _LOGGER.debug("Payload: %s", {**payload, "password": "***"})
+            _LOGGER.debug("Headers: %s", headers)
             
             response = self.session.post(url, json=payload, headers=headers, timeout=10)
             
@@ -94,24 +102,21 @@ class FurbulousCatAPI:
             
             data = response.json()
             
-            _LOGGER.debug("Response code: %s, message: %s", data.get("code"), data.get("message"))
+            _LOGGER.debug("Authentication response code: %s, message: %s", 
+                        data.get("code"), data.get("message"))
             
             if data.get("code") != 0:
-                error_msg = data.get("message", "Unknown error")
-                _LOGGER.error("API returned error code %s: %s", data.get("code"), error_msg)
-                raise FurbulousCatAuthError(f"Authentication failed: {error_msg}")
+                raise FurbulousCatAuthError(f"Authentication failed: {data.get('message')}")
             
             auth_data = data.get("data", {})
             self.token = auth_data.get("token")
             self.identity_id = auth_data.get("identityid")
             
             if not self.token:
-                _LOGGER.error("No token in response data. Available fields: %s", list(auth_data.keys()))
                 raise FurbulousCatAuthError("No token received from API")
             
             _LOGGER.info("Successfully authenticated with Furbulous Cat API")
-            _LOGGER.debug("Token (first 10 chars): %s...", self.token[:10] if self.token else None)
-            _LOGGER.debug("Identity ID: %s", self.identity_id)
+            _LOGGER.debug("Token: %s..., Identity ID: %s", self.token[:10] if self.token else None, self.identity_id)
             return True
             
         except requests.exceptions.RequestException as err:
