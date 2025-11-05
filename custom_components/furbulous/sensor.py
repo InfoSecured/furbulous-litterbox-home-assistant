@@ -283,15 +283,15 @@ class FurbulousCatPropertySensor(CoordinatorEntity, SensorEntity):
 
         elif self._property_key == "workstatus":
             # Work status mapping
-            return WORK_STATUS.get(value, f"Unknown ({value})")
+            return WORK_STATUS.get(int(value), f"Unknown ({value})") if value is not None else None
 
         elif self._property_key == "catLitterType":
             # Litter type mapping
-            return LITTER_TYPE.get(value, f"Unknown ({value})")
+            return LITTER_TYPE.get(int(value), f"Unknown ({value})") if value is not None else None
 
         elif self._property_key == "errorReportEvent":
             # Error code mapping
-            return ERROR_CODES.get(value, f"Error {value}")
+            return ERROR_CODES.get(int(value), f"Error {value}") if value is not None else None
 
         elif self._property_key in ["FullAutoModeSwitch", "catCleanOnOff", "childLockOnOff",
                                      "masterSleepOnOff", "DisplaySwitch", "handMode",
@@ -372,8 +372,8 @@ class FurbulousCatPropertySensor(CoordinatorEntity, SensorEntity):
             attrs["last_updated"] = datetime.fromtimestamp(time_ms / 1000).strftime("%Y-%m-%d %H:%M:%S")
         
         # Add error details for errorReportEvent
-        if self._property_key == "errorReportEvent":
-            error_code = value
+        if self._property_key == "errorReportEvent" and value is not None:
+            error_code = int(value)
             attrs["error_code"] = error_code
             attrs["error_message"] = ERROR_CODES.get(error_code, f"Unknown error {error_code}")
             attrs["error_severity"] = self._get_error_severity(error_code)
@@ -433,25 +433,29 @@ class FurbulousCatPetSensor(CoordinatorEntity, SensorEntity):
         if not pet_data:
             return {}
         
+        gender_value = pet_data.get("gender")
+        pet_type_value = pet_data.get("pet_type")
+        date_value = pet_data.get("date")
+
         attrs = {
             "pet_id": self._pet_id,
             "name": pet_data.get("nickname"),
-            "gender": self._get_gender_label(pet_data.get("gender")),
-            "birthday_timestamp": pet_data.get("date"),
+            "gender": self._get_gender_label(int(gender_value)) if gender_value is not None else "Unknown",
+            "birthday_timestamp": date_value,
             "age": pet_data.get("age"),
             "breed": pet_data.get("variety"),
             "weight": pet_data.get("weight"),
             "avatar": pet_data.get("avatar"),
             "food_brand": pet_data.get("food_brand"),
             "sterilization": "Yes" if pet_data.get("sterilization") == 1 else "No",
-            "pet_type": self._get_pet_type_label(pet_data.get("pet_type")),
+            "pet_type": self._get_pet_type_label(int(pet_type_value)) if pet_type_value is not None else "Unknown",
         }
-        
+
         # Calculate age if birthday timestamp is available
-        if pet_data.get("date"):
+        if date_value is not None:
             try:
                 from datetime import datetime
-                birthday = datetime.fromtimestamp(pet_data.get("date"))
+                birthday = datetime.fromtimestamp(int(date_value))
                 age_days = (datetime.now() - birthday).days
                 attrs["birthday"] = birthday.strftime("%Y-%m-%d")
                 attrs["age_days"] = age_days

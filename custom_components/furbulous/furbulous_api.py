@@ -28,7 +28,7 @@ class FurbulousCatAuthError(Exception):
 class FurbulousCatAPI:
     """API client for Furbulous Cat."""
 
-    def __init__(self, email: str, password: str, account_type: int = 1, token: str = None) -> None:
+    def __init__(self, email: str, password: str, account_type: int = 1, token: str | None = None) -> None:
         """Initialize the API client."""
         self.email = email
         self.password = password
@@ -36,7 +36,7 @@ class FurbulousCatAPI:
         self.token = token  # Allow pre-set token
         self.identity_id = None
         self.session = requests.Session()
-        self.devices = []
+        self.devices: list[dict[str, Any]] = []
 
     def _generate_sign(self, timestamp: int, path: str) -> str:
         """Generate signature for API requests.
@@ -144,7 +144,7 @@ class FurbulousCatAPI:
             "sign": sign,
         }
 
-    def _make_authenticated_request(self, endpoint: str, method: str = "GET", data: dict = None) -> dict:
+    def _make_authenticated_request(self, endpoint: str, method: str = "GET", data: dict[str, Any] | None = None) -> dict:
         """Make an authenticated request to the API.
         
         Args:
