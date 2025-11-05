@@ -56,14 +56,14 @@ class FurbulousCatAPI:
         
         payload = {
             "account_type": 1,
-            "area": "1",  # THIS IS THE KEY FIX - was "US", should be "1"
-            "account": self.email,
-            "iso": "US",
-            "AppVersion": "iPhone_26.0.1_2.0.1_202507031750",
-            "clientid": "65i0vItchd0liq0",
-            "brand": "Apple",
+            "area": "1",
             "client_token": "0acd1c78b8d16156bf59970de261cf2666e373c3042d57d94364b21caea31950",
+            "iso": "US",
             "password": self.password,
+            "clientid": "65l0vltchd0l1q8",
+            "brand": "iPhone",
+            "account": self.email,
+            "AppVersion": "iPhone_26.0.1_2.0.1_202507031750"
         }
         
         headers = {
