@@ -62,7 +62,7 @@ class FurbulousCatAPI:
             "AppVersion": "iPhone_26.0.1_2.0.1_202507031750",
             "clientid": "65i0vItchd0liq0",
             "brand": "Apple",
-            "client_token": "",
+            "client_token": "0acd1c78b8d16156bf59970de261cf2666e373c3042d57d94364b21caea31950",
             "password": self.password,
         }
         
