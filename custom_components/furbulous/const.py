@@ -31,6 +31,7 @@ WORK_STATUS = {
     2: "Cleaning",
     3: "Paused",
     4: "Error",
+    5: "Cat detected",  # Cat is in the litter box
 }
 
 # Litter Type
@@ -54,6 +55,7 @@ ERROR_CODES = {
     128: "Cover open",
     256: "Temperature error",
     512: "Communication error",
+    4096: "Cat detected in box",  # Cat presence sensor active
 }
 
 # Error severity levels
@@ -69,6 +71,7 @@ ERROR_SEVERITY = {
     128: "warning",
     256: "error",
     512: "error",
+    4096: "info",  # Cat detected is just informational
 }
 
 # Unit of measurement

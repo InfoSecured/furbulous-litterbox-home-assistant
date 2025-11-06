@@ -176,10 +176,11 @@ class FurbulousCatInBoxSensor(CoordinatorEntity, BinarySensorEntity):
                 else:
                     workstatus = workstatus_prop
 
-                # workstatus == 1 means "Working" = Cat is using the litter box
+                # workstatus == 5 means "Cat detected" = Cat is in the litter box
                 # workstatus == 0 means "Idle" = No cat present
+                # workstatus == 1 means "Working" = Device working
                 # workstatus == 2 means "Cleaning" = Cleaning in progress
-                return workstatus == 1
+                return workstatus == 5
 
         return False
 
@@ -205,10 +206,11 @@ class FurbulousCatInBoxSensor(CoordinatorEntity, BinarySensorEntity):
             # Status mapping
             status_map = {
                 0: "Idle",
-                1: "Working (Cat present)",
+                1: "Working",
                 2: "Cleaning",
                 3: "Paused",
                 4: "Error",
+                5: "Cat detected",
             }
             attrs["work_status"] = status_map.get(workstatus, f"Unknown ({workstatus})")
             attrs["work_status_code"] = workstatus
