@@ -87,10 +87,16 @@ class FurbulousCatDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Update data via library."""
         try:
-            return await self.hass.async_add_executor_job(self.api.get_data)
+            _LOGGER.debug("Regular coordinator: Starting data update (5 min interval)")
+            data = await self.hass.async_add_executor_job(self.api.get_data)
+            _LOGGER.info("Regular coordinator: Successfully updated data - found %d devices, %d pets",
+                        len(data.get("devices", [])), len(data.get("pets", [])))
+            return data
         except FurbulousCatAuthError as err:
+            _LOGGER.error("Regular coordinator: Authentication failed during update")
             raise ConfigEntryAuthFailed from err
         except Exception as err:
+            _LOGGER.error("Regular coordinator: Update failed - %s", err)
             raise UpdateFailed(f"Error communicating with API: {err}") from err
 
 
@@ -110,8 +116,14 @@ class FurbulousCatFastUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Update cat presence data via library."""
         try:
-            return await self.hass.async_add_executor_job(self.api.get_data)
+            _LOGGER.debug("Fast coordinator: Starting data update (20 sec interval)")
+            data = await self.hass.async_add_executor_job(self.api.get_data)
+            _LOGGER.debug("Fast coordinator: Successfully updated data - found %d devices",
+                         len(data.get("devices", [])))
+            return data
         except FurbulousCatAuthError as err:
+            _LOGGER.error("Fast coordinator: Authentication failed during update")
             raise ConfigEntryAuthFailed from err
         except Exception as err:
+            _LOGGER.error("Fast coordinator: Update failed - %s", err)
             raise UpdateFailed(f"Error communicating with API: {err}") from err

@@ -395,22 +395,29 @@ class FurbulousCatAPI:
 
     def get_data(self) -> dict[str, Any]:
         """Get data from the Furbulous Cat API."""
+        _LOGGER.debug("=== API get_data() called ===")
+
         devices = self.get_devices()
-        
+        _LOGGER.debug("Retrieved %d devices", len(devices))
+
         # Get properties for each device
         devices_with_properties = []
         for device in devices:
             iotid = device.get("iotid")
+            device_name = device.get("devicename", "Unknown")
             if iotid:
+                _LOGGER.debug("Fetching properties for device: %s (iotid: %s)", device_name, iotid)
                 properties = self.get_device_properties(iotid)
                 device["properties"] = properties
+                _LOGGER.debug("Device %s has %d properties", device_name, len(properties))
             devices_with_properties.append(device)
-        
+
         # Get pets information
         pets = self.get_pets()
-        
+        _LOGGER.debug("Retrieved %d pets", len(pets))
+
         # No need to get detailed info, /pet/list already returns everything
-        
+
         return {
             "authenticated": True,
             "token": self.token,
