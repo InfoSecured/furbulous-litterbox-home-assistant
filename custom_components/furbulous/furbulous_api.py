@@ -279,11 +279,14 @@ class FurbulousCatAPI:
 
                 # Debug: Log sample of property keys to understand what's available
                 if extracted_props:
-                    sample_keys = list(extracted_props.keys())[:10]  # First 10 keys
-                    _LOGGER.debug("Sample property keys for %s: %s", iotid, sample_keys)
+                    all_keys = list(extracted_props.keys())
+                    _LOGGER.debug("ALL property keys for %s: %s", iotid, all_keys)
 
                     # Log some common property values
-                    important_keys = ['workStatus', 'catWeight', 'isInBox', 'catCleanOnOff', 'litterPercent']
+                    important_keys = [
+                        'workStatus', 'catWeight', 'isInBox', 'catCleanOnOff', 'litterPercent',
+                        'errorReportEvent', 'completionStatus', 'handMode'  # Waste bin related
+                    ]
                     for key in important_keys:
                         if key in extracted_props:
                             _LOGGER.debug("Property %s = %s", key, extracted_props[key])
