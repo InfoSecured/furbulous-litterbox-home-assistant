@@ -442,6 +442,11 @@ class FurbulousCatAPI:
                     total_count = sum(item.get("value", 0) for item in counts if isinstance(item, dict))
                     _LOGGER.debug("Device %s: Total uses = %d (from %d count entries)",
                                 iotid, total_count, len(counts))
+                    # Log each count entry for debugging
+                    for idx, entry in enumerate(counts):
+                        if isinstance(entry, dict):
+                            _LOGGER.debug("  Count entry %d: value=%s, stime=%s",
+                                        idx, entry.get("value"), entry.get("stime"))
 
                 return data if isinstance(data, dict) else {}
             else:

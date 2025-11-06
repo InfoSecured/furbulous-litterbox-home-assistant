@@ -499,7 +499,8 @@ class FurbulousCatDailyUsesSensor(CoordinatorEntity, SensorEntity):
         """Initialize the sensor."""
         super().__init__(coordinator)
         self._device_id = device_id
-        self._attr_unique_id = f"furbulous_{device_id}_daily_uses"
+        # Use same unique_id as old excreteTimesEveryday sensor to replace it
+        self._attr_unique_id = f"furbulous_{device_id}_excreteTimesEveryday"
         self._attr_native_unit_of_measurement = UNIT_TIMES
         self._attr_icon = "mdi:counter"
 
