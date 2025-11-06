@@ -395,17 +395,17 @@ class FurbulousCatAPI:
 
     def get_pet_info(self, pet_id: int) -> dict[str, Any]:
         """Get detailed information for a specific pet.
-        
+
         Args:
             pet_id: Pet ID
-            
+
         Returns:
             Dict with pet information
         """
         try:
             endpoint = f"/app/v1/pet/info?petid={pet_id}"
             result = self._make_authenticated_request(endpoint)
-            
+
             if result.get("code") == 0:
                 pet_info = result.get("data", {})
                 _LOGGER.debug("Retrieved info for pet %s", pet_id)
@@ -413,9 +413,43 @@ class FurbulousCatAPI:
             else:
                 _LOGGER.warning("Failed to get info for pet %s: %s", pet_id, result.get("message"))
                 return {}
-                
+
         except Exception as err:
             _LOGGER.warning("Error getting info for pet %s: %s", pet_id, err)
+            return {}
+
+    def get_device_pet_data(self, iotid: str, days: int = 1) -> dict[str, Any]:
+        """Get pet activity data for a device (usage statistics).
+
+        Args:
+            iotid: Device IoT ID
+            days: Number of days of history (1-30, default 1 for today)
+
+        Returns:
+            Dict with counts, duration, and weight data
+        """
+        try:
+            endpoint = f"/app/v1/device/data/petData?iotid={iotid}&day={days}&type=0"
+            result = self._make_authenticated_request(endpoint)
+
+            if result.get("code") == 0:
+                data = result.get("data", {})
+                _LOGGER.debug("Retrieved pet data for device %s (day=%d)", iotid, days)
+
+                # Log the counts if available
+                counts = data.get("counts", [])
+                if counts:
+                    total_count = sum(item.get("value", 0) for item in counts if isinstance(item, dict))
+                    _LOGGER.debug("Device %s: Total uses = %d (from %d count entries)",
+                                iotid, total_count, len(counts))
+
+                return data if isinstance(data, dict) else {}
+            else:
+                _LOGGER.warning("Failed to get pet data for device %s: %s", iotid, result.get("message"))
+                return {}
+
+        except Exception as err:
+            _LOGGER.warning("Error getting pet data for device %s: %s", iotid, err)
             return {}
 
     def get_data(self) -> dict[str, Any]:
@@ -425,7 +459,7 @@ class FurbulousCatAPI:
         devices = self.get_devices()
         _LOGGER.debug("Retrieved %d devices", len(devices))
 
-        # Get properties for each device
+        # Get properties and pet data for each device
         devices_with_properties = []
         for device in devices:
             iotid = device.get("iotid")
@@ -435,6 +469,25 @@ class FurbulousCatAPI:
                 properties = self.get_device_properties(iotid)
                 device["properties"] = properties
                 _LOGGER.debug("Device %s has %d properties", device_name, len(properties))
+
+                # Fetch today's usage statistics
+                _LOGGER.debug("Fetching pet data (usage stats) for device: %s", device_name)
+                pet_data = self.get_device_pet_data(iotid, days=1)
+                device["pet_data"] = pet_data
+
+                # Extract today's usage count from pet_data
+                if pet_data:
+                    counts = pet_data.get("counts", [])
+                    if counts:
+                        # Sum all count values for today
+                        total_uses = sum(item.get("value", 0) for item in counts if isinstance(item, dict))
+                        device["daily_uses_actual"] = total_uses
+                        _LOGGER.info("Device %s: Actual daily uses = %d", device_name, total_uses)
+                    else:
+                        device["daily_uses_actual"] = 0
+                else:
+                    device["daily_uses_actual"] = 0
+
             devices_with_properties.append(device)
 
         # Get pets information

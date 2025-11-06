@@ -51,7 +51,7 @@ async def async_setup_entry(
             entities.extend([
                 # Weight and usage
                 FurbulousCatPropertySensor(coordinator, device_id, "catWeight", "Cat weight"),
-                FurbulousCatPropertySensor(coordinator, device_id, "excreteTimesEveryday", "Daily uses"),
+                FurbulousCatDailyUsesSensor(coordinator, device_id),  # Use actual API data
                 FurbulousCatPropertySensor(coordinator, device_id, "excreteTimerEveryday", "Daily duration"),
 
                 # Status sensors
@@ -486,3 +486,82 @@ class FurbulousCatPetSensor(CoordinatorEntity, SensorEntity):
     def available(self) -> bool:
         """Return if entity is available."""
         return bool(self._get_pet_data())
+
+
+class FurbulousCatDailyUsesSensor(CoordinatorEntity, SensorEntity):
+    """Sensor for daily usage count from petData API."""
+
+    def __init__(
+        self,
+        coordinator: FurbulousCatDataUpdateCoordinator,
+        device_id: int,
+    ) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator)
+        self._device_id = device_id
+        self._attr_unique_id = f"furbulous_{device_id}_daily_uses"
+        self._attr_native_unit_of_measurement = UNIT_TIMES
+        self._attr_icon = "mdi:counter"
+
+        # Set device info
+        device = self.device_data
+        if device:
+            self._attr_device_info = get_device_info(device)
+
+    @property
+    def device_data(self) -> dict | None:
+        """Get the device data from coordinator."""
+        devices = self.coordinator.data.get("devices", [])
+        for device in devices:
+            if device.get("id") == self._device_id:
+                return device
+        return None
+
+    @property
+    def name(self) -> str:
+        """Return the name of the sensor."""
+        device = self.device_data
+        if device:
+            device_name = device.get("name", f"Device {self._device_id}")
+            return f"{device_name} - Daily uses"
+        return f"Furbulous Device {self._device_id} - Daily uses"
+
+    @property
+    def native_value(self) -> int | None:
+        """Return the number of uses today."""
+        device = self.device_data
+        if device:
+            # Use the actual daily uses from petData API
+            return device.get("daily_uses_actual", 0)
+        return None
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        """Return additional attributes."""
+        device = self.device_data
+        if not device:
+            return {}
+
+        attrs = {}
+
+        # Add pet_data info if available
+        pet_data = device.get("pet_data", {})
+        if pet_data:
+            counts = pet_data.get("counts", [])
+            attrs["count_entries"] = len(counts)
+            if counts:
+                attrs["latest_count_time"] = counts[-1].get("stime") if isinstance(counts[-1], dict) else None
+
+        # Also include the property value for comparison
+        properties = device.get("properties", {})
+        property_value = properties.get("excreteTimesEveryday")
+        if property_value is not None:
+            attrs["property_value"] = property_value
+            attrs["note"] = "Using petData API (more accurate than property)"
+
+        return attrs
+
+    @property
+    def available(self) -> bool:
+        """Return if entity is available."""
+        return self.device_data is not None
