@@ -545,20 +545,19 @@ class FurbulousCatDailyUsesSensor(CoordinatorEntity, SensorEntity):
 
         attrs = {}
 
-        # Add pet_data info if available
-        pet_data = device.get("pet_data", {})
-        if pet_data:
-            counts = pet_data.get("counts", [])
-            attrs["count_entries"] = len(counts)
-            if counts:
-                attrs["latest_count_time"] = counts[-1].get("stime") if isinstance(counts[-1], dict) else None
+        # Add daily_stats info if available
+        daily_stats = device.get("daily_stats", {})
+        if daily_stats:
+            attrs["average_duration_seconds"] = daily_stats.get("avg_duration", 0)
+            attrs["times_difference"] = daily_stats.get("times_diff", 0)
+            attrs["average_difference"] = daily_stats.get("avg_diff", 0)
 
         # Also include the property value for comparison
         properties = device.get("properties", {})
         property_value = properties.get("excreteTimesEveryday")
         if property_value is not None:
             attrs["property_value"] = property_value
-            attrs["note"] = "Using petData API (more accurate than property)"
+            attrs["note"] = "Using wcheader API (same as mobile app)"
 
         return attrs
 
