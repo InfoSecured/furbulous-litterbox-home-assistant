@@ -418,43 +418,32 @@ class FurbulousCatAPI:
             _LOGGER.warning("Error getting info for pet %s: %s", pet_id, err)
             return {}
 
-    def get_device_pet_data(self, iotid: str, days: int = 1) -> dict[str, Any]:
-        """Get pet activity data for a device (usage statistics).
+    def get_device_daily_stats(self, iotid: str) -> dict[str, Any]:
+        """Get daily usage statistics for a device (wcheader endpoint).
 
         Args:
             iotid: Device IoT ID
-            days: Number of days of history (1-30, default 1 for today)
 
         Returns:
-            Dict with counts, duration, and weight data
+            Dict with times (daily uses), avg_duration, times_diff, avg_diff
         """
         try:
-            endpoint = f"/app/v1/device/data/petData?iotid={iotid}&day={days}&type=0"
+            endpoint = f"/app/v1/device/data/wcheader?iotid={iotid}"
             result = self._make_authenticated_request(endpoint)
 
             if result.get("code") == 0:
                 data = result.get("data", {})
-                _LOGGER.debug("Retrieved pet data for device %s (day=%d)", iotid, days)
-
-                # Log the counts if available
-                counts = data.get("counts", [])
-                if counts:
-                    total_count = sum(item.get("value", 0) for item in counts if isinstance(item, dict))
-                    _LOGGER.debug("Device %s: Total uses = %d (from %d count entries)",
-                                iotid, total_count, len(counts))
-                    # Log each count entry for debugging
-                    for idx, entry in enumerate(counts):
-                        if isinstance(entry, dict):
-                            _LOGGER.debug("  Count entry %d: value=%s, stime=%s",
-                                        idx, entry.get("value"), entry.get("stime"))
-
+                times = data.get("times", 0)
+                avg_duration = data.get("avg_duration", 0)
+                _LOGGER.debug("Retrieved daily stats for device %s: times=%d, avg_duration=%d",
+                            iotid, times, avg_duration)
                 return data if isinstance(data, dict) else {}
             else:
-                _LOGGER.warning("Failed to get pet data for device %s: %s", iotid, result.get("message"))
+                _LOGGER.warning("Failed to get daily stats for device %s: %s", iotid, result.get("message"))
                 return {}
 
         except Exception as err:
-            _LOGGER.warning("Error getting pet data for device %s: %s", iotid, err)
+            _LOGGER.warning("Error getting daily stats for device %s: %s", iotid, err)
             return {}
 
     def get_data(self) -> dict[str, Any]:
@@ -475,21 +464,17 @@ class FurbulousCatAPI:
                 device["properties"] = properties
                 _LOGGER.debug("Device %s has %d properties", device_name, len(properties))
 
-                # Fetch today's usage statistics
-                _LOGGER.debug("Fetching pet data (usage stats) for device: %s", device_name)
-                pet_data = self.get_device_pet_data(iotid, days=1)
-                device["pet_data"] = pet_data
+                # Fetch today's usage statistics from wcheader endpoint
+                _LOGGER.debug("Fetching daily stats for device: %s", device_name)
+                daily_stats = self.get_device_daily_stats(iotid)
+                device["daily_stats"] = daily_stats
 
-                # Extract today's usage count from pet_data
-                if pet_data:
-                    counts = pet_data.get("counts", [])
-                    if counts:
-                        # Sum all count values for today
-                        total_uses = sum(item.get("value", 0) for item in counts if isinstance(item, dict))
-                        device["daily_uses_actual"] = total_uses
-                        _LOGGER.info("Device %s: Actual daily uses = %d", device_name, total_uses)
-                    else:
-                        device["daily_uses_actual"] = 0
+                # Extract today's usage count from daily_stats
+                if daily_stats:
+                    daily_uses = daily_stats.get("times", 0)
+                    device["daily_uses_actual"] = daily_uses
+                    _LOGGER.info("Device %s: Daily uses = %d, Avg duration = %d sec",
+                               device_name, daily_uses, daily_stats.get("avg_duration", 0))
                 else:
                     device["daily_uses_actual"] = 0
 
