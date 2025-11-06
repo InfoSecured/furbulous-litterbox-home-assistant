@@ -320,10 +320,11 @@ class FurbulousCatAPI:
             endpoint = "/app/v1/device/properties/set"
             payload = {
                 "iotid": iotid,
-                **properties
+                "items": properties
             }
             
             result = self._make_authenticated_request(endpoint, method="POST", data=payload)
+            _LOGGER.debug("set_device_property response: code=%s, message=%s", result.get("code"), result.get("message"))
             
             if result.get("code") == 0:
                 _LOGGER.info("Successfully set properties for %s: %s", iotid, properties)
