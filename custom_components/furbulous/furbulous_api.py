@@ -229,24 +229,33 @@ class FurbulousCatAPI:
         """Get list of Furbulous devices."""
         try:
             result = self._make_authenticated_request(API_DEVICE_LIST_ENDPOINT)
-            
+
             if result.get("code") == 0:
                 # data is already a list, not a dict with "list" key
                 devices_data = result.get("data", [])
                 self.devices = devices_data if isinstance(devices_data, list) else []
                 _LOGGER.info("Retrieved %d Furbulous devices", len(self.devices))
+
+                # Debug: Log device structure to understand field names
+                for idx, device in enumerate(self.devices):
+                    _LOGGER.debug("Device %d keys: %s", idx, list(device.keys()))
+                    _LOGGER.debug("Device %d sample data: iotid=%s, name fields: %s",
+                                idx,
+                                device.get("iotid"),
+                                {k: device.get(k) for k in device.keys() if 'name' in k.lower()})
+
                 return self.devices
             else:
                 _LOGGER.error("Failed to get devices: %s", result.get("message"))
                 return []
-                
+
         except Exception as err:
             _LOGGER.error("Error getting devices: %s", err)
             raise
 
     def get_device_properties(self, iotid: str) -> dict[str, Any]:
         """Get properties for a specific device.
-        
+
         Uses the properties/get endpoint which returns all device properties.
         Each property has a 'value' and 'time' field.
         """
@@ -254,7 +263,7 @@ class FurbulousCatAPI:
             # Use the properties/get endpoint
             endpoint = f"/app/v1/device/properties/get?iotid={iotid}"
             result = self._make_authenticated_request(endpoint)
-            
+
             if result.get("code") == 0:
                 properties = result.get("data", {})
                 # Extract just the values from the properties
@@ -265,14 +274,26 @@ class FurbulousCatAPI:
                         extracted_props[key] = prop_data['value']
                     else:
                         extracted_props[key] = prop_data
-                
+
                 _LOGGER.debug("Retrieved %d properties for device %s", len(extracted_props), iotid)
+
+                # Debug: Log sample of property keys to understand what's available
+                if extracted_props:
+                    sample_keys = list(extracted_props.keys())[:10]  # First 10 keys
+                    _LOGGER.debug("Sample property keys for %s: %s", iotid, sample_keys)
+
+                    # Log some common property values
+                    important_keys = ['workStatus', 'catWeight', 'isInBox', 'catCleanOnOff', 'litterPercent']
+                    for key in important_keys:
+                        if key in extracted_props:
+                            _LOGGER.debug("Property %s = %s", key, extracted_props[key])
+
                 return extracted_props
             else:
-                _LOGGER.warning("Failed to get properties for device %s: %s (code: %s)", 
+                _LOGGER.warning("Failed to get properties for device %s: %s (code: %s)",
                               iotid, result.get("message"), result.get("code"))
                 return {}
-                
+
         except Exception as err:
             _LOGGER.warning("Error getting properties for device %s: %s", iotid, err)
             # Return empty dict instead of raising - properties are optional
