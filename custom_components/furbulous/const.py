@@ -45,11 +45,11 @@ LITTER_TYPE = {
 ERROR_CODES = {
     0: "No error",
     1: "Sensor error - Weight sensor",
-    2: "Sensor error - IR sensor", 
+    2: "Sensor error - IR sensor",
     4: "Motor error - Rotation blocked",
     8: "Motor error - Overload",
     16: "Litter full - Need to empty",
-    32: "Normal operation",  # Default value when no error
+    32: "Waste bin full - Need to empty",  # Trash/waste drawer full
     64: "Drawer not in place",
     128: "Cover open",
     256: "Temperature error",
@@ -64,7 +64,7 @@ ERROR_SEVERITY = {
     4: "error",
     8: "error",
     16: "warning",
-    32: "info",
+    32: "warning",  # Waste bin full is a warning
     64: "warning",
     128: "warning",
     256: "error",

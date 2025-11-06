@@ -273,7 +273,7 @@ class FurbulousCatWasteBinFullSensor(CoordinatorEntity, BinarySensorEntity):
         if device:
             properties = device.get("properties", {})
 
-            # Method 1: Check error code 16
+            # Method 1: Check error codes for full bin
             error_prop = properties.get("errorReportEvent")
             if error_prop:
                 if isinstance(error_prop, dict):
@@ -281,7 +281,8 @@ class FurbulousCatWasteBinFullSensor(CoordinatorEntity, BinarySensorEntity):
                 else:
                     error_code = error_prop
 
-                if error_code == 16:  # Litter full code
+                # Error code 16 = Litter full, Error code 32 = Waste bin full
+                if error_code in [16, 32]:
                     return True
 
             # Method 2: Logic based on completionStatus
