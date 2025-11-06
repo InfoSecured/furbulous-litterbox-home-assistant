@@ -425,7 +425,7 @@ class FurbulousCatAPI:
         devices_with_properties = []
         for device in devices:
             iotid = device.get("iotid")
-            device_name = device.get("devicename", "Unknown")
+            device_name = device.get("name", "Unknown")  # Fixed: use 'name' not 'devicename'
             if iotid:
                 _LOGGER.debug("Fetching properties for device: %s (iotid: %s)", device_name, iotid)
                 properties = self.get_device_properties(iotid)
