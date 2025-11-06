@@ -284,8 +284,9 @@ class FurbulousCatAPI:
 
                     # Log some common property values
                     important_keys = [
-                        'workStatus', 'catWeight', 'isInBox', 'catCleanOnOff', 'litterPercent',
-                        'errorReportEvent', 'completionStatus', 'handMode'  # Waste bin related
+                        'workstatus', 'catWeight', 'catCleanOnOff',  # Fixed: workstatus is lowercase
+                        'errorReportEvent', 'completionStatus', 'handMode',  # Waste bin related
+                        'excreteTimesEveryday', 'excreteTimerEveryday'  # Daily usage stats
                     ]
                     for key in important_keys:
                         if key in extracted_props:
